@@ -16,6 +16,12 @@ class ValidateController extends Controller{
         $obj = new \stdClass();
 
         switch ($validation) {
+
+            case 'empty':
+                $obj->status = self::emptyCheck($value);
+                $obj->error = 'empty';
+                break;
+
             case 'required':
                 $obj->status = self::required($value);
                 $obj->error = 'required';
@@ -155,6 +161,11 @@ class ValidateController extends Controller{
     protected static function set($value = null)
     {
         return isset($value);
+    }
+
+    protected static function emptyCheck($value = null)
+    {
+        return empty(trim($value));
     }
 
     protected static function required($value = null)

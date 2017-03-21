@@ -60,6 +60,16 @@ class Validate extends Module{
                 $arguments = explode(':', $case);
                 $type = array_shift($arguments);
                 $validate = VC::is(isset($request[$input]) ? $request[$input] : null, $type, $arguments, $input);
+                
+                // allow empty type
+                if($type == 'empty'){
+                    if($validate->status){
+                        break;
+                    }else{
+                        continue;
+                    }
+                }
+
                 if(!$validate->status){
                     // check for input if exists or initialize it
                     if(!isset($errors[$input])){
