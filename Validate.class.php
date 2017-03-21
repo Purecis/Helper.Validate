@@ -16,8 +16,9 @@ namespace App\Helper;
 use \App\System\Module;
 use App\Helper\Validate\Controller\ValidateController as VC;
 
-
 class Validate extends Module{
+    
+    private $errors = [];
     private static $messages = [];
 
     public function __invoke()
@@ -30,14 +31,9 @@ class Validate extends Module{
         $request = $args[0];
         $checker = $args[1];
         
-        // $validate = $this->check($request, $checker);
-        $validate = call_user_func_array([$this, 'check'], $args);
-
-        if(sizeof($validate)){
-            $this->response($validate)->code(422)->kill();
-        }
+        call_user_func_array([$this, 'check'], $args);
+        return $this;
     }
-
 
     public function check()
     {
@@ -85,11 +81,27 @@ class Validate extends Module{
                 }
             }
         }
-        return $errors;
+        $this->errors = $errors;
+        return $this;
     }
 
-    public function messages(){
-        self::$messages = func_get_arg(0);
+    public function messages()
+    {
+        self::$messages = array_merge(self::$messages, func_get_arg(0));
+        return $this;
+    }
+
+    public function orFail()
+    {
+        if(sizeof($this->errors)){
+            $this->response($this->errors)->code(422)->kill();
+        }
+        return $this;
+    }
+
+    public function errors()
+    {
+        return $this->errors;
     }
 }
 

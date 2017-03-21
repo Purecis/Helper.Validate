@@ -33,6 +33,12 @@ $my_validator = $validate->check($request, $fields, $message);
 // you can make custom messages from  message function or by 3d argument in check or invoke
 $validate->messages($messages);
 
+// catch errors, return array of errors
+$my_validator->errors();
+
+// kill the response and return the errors
+$my_validator->orFail();
+
 ```
 
 and you can access the validator from any controller as IoC
@@ -46,6 +52,8 @@ $this->HelperValidate($request, $fields, $message);
 ```
 
 ###Available Validation Rules
+
+`empty` : allow field to be empty
 
 `required` : check if field required
 
